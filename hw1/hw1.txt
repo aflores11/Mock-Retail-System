@@ -1,0 +1,5 @@
+Problem 1	
+	Part a: 1, 4, 8
+	Part b: 2, 3 , 4 , 5
+	part c: 4
+	part d: 1, 4, 2(not sure if this form is the one where you are prompted to confirm your late submission)
