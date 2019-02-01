@@ -205,14 +205,14 @@ std::string* ULListStr::getValAtLoc(size_t loc) const{
   if(loc <0 || loc > size_-1 ) return nullptr; //checks if the location if between the indexes that we actually have
   else{
     Item* temp = head_; //sets a temporary item to not modify the original
-    int tempfirst = temp->first;
+    int tempfirst =(int)temp->first;
     int location = 0; // diff from size_t loc; keeps track of long list index
     
     while(location != (int)loc){
       
       if(tempfirst == (int)temp->last -1){ //checks if there is no more 
         temp = temp->next; //goes to the next item
-        tempfirst=temp->first;  //sets the first pointer to the first pointer of the new item we are in
+        tempfirst=(int)temp->first;  //sets the first pointer to the first pointer of the new item we are in
         location++;
 
       }
