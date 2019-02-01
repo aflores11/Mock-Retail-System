@@ -1,3 +1,28 @@
+Problem 1
+    part a:
+        The status of the README.md file will be already tracked since you just cloned the repo and there has been no modification to it. 
+    
+    part b:
+        The status of READMe.md is going to show that is had been modified ("Markdown is easy" was appended), therefore it will need to be added for it to be committed again. 
+        Since fun_problem.txt was just made, it will show that it is untracked and would need to be satged if you want to commit it.
+
+    part c:
+        fun_problem.txt will now be tracked and both files will be ready to be committed.
+
+    part d:
+        The files will be committed with the message "My opinion on markdown". After that, it will show that the files README.md and fun_problem.txt have been modified, however, both
+        files will still show in the changes to be committed as the unmodified versions. if you want to commit the modified versions, you will need to add them again.
+
+    part e:
+        the modified version of README.md will be added and ready to be committed. The new modifications of fun_problem.txt will be discarded. The contents of fun_problem.txt wil be 
+        reverted back to the state it was in when it was last committed.
+
+    part f: 
+        The status of README.md will be that it is modified and would need to be added again if the new changes want to be committed. It reaches this status because echo with the >>
+        operator appends whatever you have inside the " " to the file.
+
+
+
 Problem 3
 
 	1.  map<playlist/album, map<track number, song > > I chose a map inside a map because if you provide an album or playlist, you can then give more information such as a track number for it to give the name of the song it is attached to. 

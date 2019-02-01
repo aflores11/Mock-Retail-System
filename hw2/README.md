@@ -3,7 +3,7 @@ ID: 3518 767 555
 Email: angelflo@usc.edu
 
 
-Problem 4 is uploaded through a pdf file on github.
+Problems 4 and 5 are uploaded through pdf files on github.
 
 g++ -g -Wall -std=c++11 split_test.cpp split.cpp -o split_test
 
