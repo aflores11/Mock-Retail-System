@@ -168,22 +168,29 @@ void ULListStr::push_front(const std::string& val){
 }
 
 void ULListStr::pop_front(){
-  if(head_ == nullptr) return; // if empty list do nothing
+  if(head_ == nullptr) return; //does nothing if list empty
 
   else{
-
-    if(head_->first == ARRSIZE-1){  // case where there is only one value in the array and need to delete node 
-      Item* temp = head_->next;  // so that we do not have an empty node
+    if(head_->first == ARRSIZE-1 && tail_== head_){
+      Item* temp = head_->next;
       delete head_;
-      head_ = temp;
-      head_->prev = nullptr;
-      head_->first=0;
-      size_--; // need to reduce size since we are betting rid of a value
+      tail_=temp;
+      size_--;
     }
-    else{
-      head_->first = head_->first+1; 
-      size_--; // need to reduce size since we are betting rid of a value
-    }
+      else{
+      if(head_->first == ARRSIZE-1){  // case where there is only one value in the array and need to delete node 
+        Item* temp = head_->next;  // so that we do not have an empty node
+        delete head_;
+        head_ = temp;
+        head_->prev = nullptr;
+        head_->first=0;
+        size_--; // need to reduce size since we are betting rid of a value
+      }
+      else{
+        head_->first = head_->first+1; 
+        size_--; // need to reduce size since we are betting rid of a value
+      }
+    }  
    } 
 }
 
