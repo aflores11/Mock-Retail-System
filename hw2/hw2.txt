@@ -1,0 +1,9 @@
+Problem 3
+
+	1.  map<playlist/album, map<track number, song > > I chose a map inside a map because if you provide an album or playlist, you can then give more information such as a track number for it to give the name of the song it is attached to. 
+
+	2. List, more specifically a doubly linked list of strings if you only plan to go through the recipe in order without caring about jumping/skipping multiple steps at once.
+
+	3. map<file extension, set of programs that are able to read it>  A set inside a map would be best because if you give a file extension, it can quickly give you a set of programs that can read it all at once instead of viewing the programs one by one.
+
+	4. map <Tv station, set of station identifications> if you give the name of the tv station to the map, it can give you the set of all identifications attached to it such as channel numbers or network it is a part of.
