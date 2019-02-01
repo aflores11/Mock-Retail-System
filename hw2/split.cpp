@@ -21,16 +21,15 @@ void put_next(Node* &in, Node*& head);
 
 void split(Node*& in, Node*& odds, Node*& evens)
 {
-  /* Add code here */
 if(in == nullptr) return;
 
 	Node* hold = in; // holds the current node
 	in = in->next; // sets in to the next node getting rid of current node in Original List
 	if(hold->value%2 ==0){ // checks if the current node's value is even
 		
-		if(evens == nullptr){
-			evens = hold;
-			evens->next=nullptr;
+		if(evens == nullptr){ //empty list case
+			evens = hold; // sets evens to be the current node
+			evens->next=nullptr; // we only care about the current node so get rid of the rest
 			split(in, odds, evens);
 		}
 		else{
@@ -40,30 +39,29 @@ if(in == nullptr) return;
 		}
 	}
 	else{ // if the current node's value is not even, then it is odd
-		if(odds == nullptr){
+		if(odds == nullptr){ //empty list case
 			odds = hold;
 			odds->next=nullptr;
-			split(in, odds, evens); //function adds the current node the end of the list
+			split(in, odds, evens); 
 		}
-		else{
-			put_next(hold, odds);
+		else{ //not empty
+			put_next(hold, odds); //function adds the current node the end of the list
 			
 			split(in, odds, evens);
 		}
 	}
 
 }
-
-/* If you needed a helper function, write it here */
 //head = Even or Odd list
+//purpose of this function is to set the node given to the end of the list to keep the order of the original list
 void put_next(Node*& in, Node*& head){
-	Node* list = head;
-	while(list != nullptr){
+	Node* list = head; // makes temporary node so it does not modify the original
+	while(list != nullptr){ //goes through the list until it reaches the final node
 		if(list->next == nullptr) break;
 		list = list->next;
 	
 	}	
-	list->next=in;
+	list->next=in; // sets the current node to be the last node in the even/odd's list 
 	in->next=nullptr;
 	
 }
