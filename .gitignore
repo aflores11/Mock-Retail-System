@@ -47,3 +47,6 @@
 *.exe
 *.out
 *.app
+
+hw3/hw3_check/
+hw3/stringparser
