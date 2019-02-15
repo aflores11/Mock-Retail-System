@@ -166,8 +166,8 @@ void ULListStr::push_front(const std::string& val){
 }
 
 void ULListStr::pop_front(){
- if(head_ == nullptr) return; //does nothing if list empty
-
+  if(head_ == nullptr) return; //does nothing if list empty
+  
   if(head_->first == ARRSIZE-1 && tail_== head_){
       delete head_;
       head_ = nullptr;
@@ -180,7 +180,7 @@ void ULListStr::pop_front(){
         delete head_;
         head_ = temp;
         head_->prev = nullptr;
-        head_->first=0;
+        head_->first=temp->first;
         size_--; // need to reduce size since we are betting rid of a value
       }
   else{
