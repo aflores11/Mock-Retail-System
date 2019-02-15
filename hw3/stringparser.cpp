@@ -116,7 +116,7 @@ int main(int argc, char *argv[])
             continue;
         }
 
-        if (main_stack.size() != 1 && !main_stack.empty())
+        if (!main_stack.empty() && main_stack.size() != 1)
         {
             finalword = main_stack.top();
             main_stack.pop();
@@ -161,7 +161,6 @@ int main(int argc, char *argv[])
     products.close();
 }
 
-
 void carrot_simplify(StackString &in, string &finalword)
 {
     while (in.top() == "<" || in.top() == ">")
@@ -182,9 +181,11 @@ based on the input of the character, it does the arithmetic for the < or > chara
 */
 void simplify(string &in, const string &c)
 {
+    if (in.empty())
+        return;
     if (c == "<")
     {
-        in.erase(in.size() - 1, 1);
+        in.erase(in.length() - 1, 1);
         return;
     }
     if (c == ">")
@@ -210,7 +211,7 @@ void simplify(const string &in1, const string &in2, string &out, const string &c
         if (temp != (int)string::npos)
         {
             out = in1;
-            out.erase(temp, in2.size());
+            out.erase(temp, in2.length());
         }
         else
         {
@@ -329,13 +330,22 @@ bool evaluate(StackString &main_stack, stringstream &ParseStr, char &tempchar, s
                 return false;
             string word1 = main_stack.top();
             main_stack.pop();
-            if (!check_if_word(word2)) //want string after operator to be a word
+            if (!check_if_word(word1)) //want string after operator to be a word
             {
                 return false;
             }
+
             if (!main_stack.empty() && (main_stack.top() == "<" || main_stack.top() == ">"))
             {
-                carrot_simplify(main_stack, finalword);
+                while (main_stack.top() == "<" || main_stack.top() == ">")
+                {
+
+                    simplify(word1, main_stack.top());
+                    main_stack.pop();
+                    //so that it wont throw exception if <> are the last strings on stack and won't try to access an empty list when calling top()
+                    if (main_stack.empty())
+                        break;
+                }
             }
 
             if (!main_stack.empty() && main_stack.top() == "(")
