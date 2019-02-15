@@ -10,7 +10,8 @@ using namespace std;
 void simplify(string &in, const string &c);
 void simplify(const string &in1, const string &in2, string &out, const string &c);
 bool check_if_word(const string &in);
-void check_if_empty(StackString &in, ofstream &putout);
+bool evaluate(StackString &main_stack, stringstream &ParseStr, char &tempchar, string &finalword);
+void carrot_simplify(StackString &in, string &finalword);
 
 int main(int argc, char *argv[])
 {
@@ -41,7 +42,7 @@ int main(int argc, char *argv[])
 
     if (expression.empty())
     {
-        products << "MALFORMED\n";
+        products << "\n";
         getline(infile, expression);
     }
 
@@ -50,7 +51,7 @@ int main(int argc, char *argv[])
         StackString main_stack;
         if (expression.empty())
         {
-            products << "MALFORMED\n";
+            products << "\n";
             getline(infile, expression);
             continue;
         }
@@ -59,6 +60,7 @@ int main(int argc, char *argv[])
         char tempchar;
         string finalword;
         ParseStr >> tempchar;
+        bool already_Malformed = false;
 
         while (!ParseStr.fail())
         {
@@ -72,142 +74,18 @@ int main(int argc, char *argv[])
                 }
                 if (tempchar == ')')
                 {
-                    int count = 0;
-                    string prevoperator;
-                    main_stack.push(string(1, tempchar));
-                    main_stack.pop();
-                    while (main_stack.top() != "(")
+                    if (!evaluate(main_stack, ParseStr, tempchar, finalword))
                     {
-                        //checks for if list is empty and closing parenthesis is not found
-                        check_if_empty(main_stack, products);
-
-                        string word2 = main_stack.top();
-                        main_stack.pop();
-                        if (!check_if_word(word2)) //want the first string to be a word
-                        {
-                            products << "MALFORMED" << endl;
-                            break;
-                        }
-
-                        check_if_empty(main_stack, products);
-                        string operator_ = main_stack.top();
-                        if (count == 0)
-                        {
-                            prevoperator = operator_;
-                        }
-                        // take care of (<> word ) cases
-                        if (operator_ == "(")
-                        {
-                            main_stack.pop();
-                            main_stack.push(word2);
-                            break;
-                        }
-
-                        if (operator_ == "<" || operator_ == ">")
-                        {
-                            while (main_stack.top() == "<" || main_stack.top() == ">")
-                            {
-
-                                simplify(word2, main_stack.top());
-                                main_stack.pop();
-
-                                //so that it wont throw exception if <> are the last strings on stack and won't try to access an empty list when calling top()
-                                if (main_stack.empty())
-                                {
-                                    break;
-                                }
-                            }
-                            operator_ = main_stack.top();
-                            if (count == 0)
-                            {
-                                prevoperator = operator_;
-                            }
-                        }
-                        main_stack.pop();
-                        if (check_if_word(operator_)) //we want the operator to actually be a + or -
-                        {
-                            products << "MALFORMED\n";
-                            break;
-                        }
-
-                        if (operator_ == "+")
-                        {
-                            check_if_empty(main_stack, products);
-                            string word1 = main_stack.top();
-                            main_stack.pop();
-                            if (!check_if_word(word2)) //want string after operator to be a word
-                            {
-                                products << "MALFORMED\n";
-                                break;
-                            }
-                            simplify(word1, word2, finalword, operator_);
-                            check_if_empty(main_stack, products);
-                            if (main_stack.top() == "(")
-                            {
-                                main_stack.pop();
-                                main_stack.push(finalword);
-                                break;
-                            }
-                            else
-                            {
-                                main_stack.push(finalword);
-                                count++;
-                                continue;
-                            }
-                        }
-
-                        if (operator_ == "-")
-                        {
-                            if (prevoperator == "+") // checks if it is mixed with different operator
-                            {
-                                products << "MALFORMED\n";
-                                break;
-                            }
-                            check_if_empty(main_stack, products);
-                            string word1 = main_stack.top();
-                            main_stack.pop();
-                            if (!check_if_word(word2)) //want string after operator to be a word
-                            {
-                                products << "MALFORMED\n";
-                                break;
-                            }
-                            check_if_empty(main_stack, products);
-                            if (main_stack.top() == "<" || main_stack.top() == ">")
-                            {
-                                while (main_stack.top() == "<" || main_stack.top() == ">")
-                                {
-
-                                    simplify(finalword, main_stack.top());
-                                    main_stack.pop();
-
-                                    //so that it wont throw exception if <> are the last strings on stack and won't try to access an empty list when calling top()
-                                    if (main_stack.empty())
-                                    {
-                                        break;
-                                    }
-                                }
-                            }
-                            if (main_stack.top() == "(")
-                            {
-                                simplify(word1, word2, finalword, operator_);
-                                main_stack.pop();
-                                main_stack.push(finalword);
-                                break;
-                            }
-                            else
-                            {
-                                products << "MALFORMED\n";
-                                break;
-                            }
-                        }
+                        products << "Malformed\n";
+                        already_Malformed = true;
+                        break;
                     }
-                    ParseStr >> tempchar;
-                    continue;
                 }
 
                 else
                 {
-                    products << "MALFORMED\n";
+                    products << "Malformed\n";
+                    already_Malformed = true;
                     break;
                 }
             }
@@ -220,62 +98,56 @@ int main(int argc, char *argv[])
                     finalword += tempchar;
                     ParseStr >> tempchar;
                 }
-
-                while (main_stack.top() == "<" || main_stack.top() == ">")
+                if (!main_stack.empty() && (main_stack.top() == "<" || main_stack.top() == ">"))
                 {
-
-                    simplify(finalword, main_stack.top());
-                    main_stack.pop();
-
-                    //so that it wont throw exception if <> are the last strings on stack and won't try to access an empty list when calling top()
-                    if (main_stack.empty())
-                    {
-                        break;
-                    }
+                    carrot_simplify(main_stack, finalword);
                 }
-                main_stack.push(finalword);
+                else
+                {
+                    main_stack.push(finalword);
+                }
             }
         }
 
-        if (main_stack.size() != 1)
+        if (already_Malformed)
+        {
+            expression.clear();
+            getline(infile, expression);
+            continue;
+        }
+
+        if (main_stack.size() != 1 && !main_stack.empty())
         {
             finalword = main_stack.top();
             main_stack.pop();
             if (!check_if_word(finalword))
             {
-                products << "MALFORMED\n";
-                break;
+                products << "Malformed\n";
+                already_Malformed = true;
             }
             else
             {
-                if (main_stack.top() == "<" || main_stack.top() == ">")
+                if (!main_stack.empty() && (main_stack.top() == "<" || main_stack.top() == ">"))
                 {
-                    while (main_stack.top() == "<" || main_stack.top() == ">")
-                    {
-
-                        simplify(finalword, main_stack.top());
-                        main_stack.pop();
-
-                        //so that it wont throw exception if <> are the last strings on stack and won't try to access an empty list when calling top()
-                        if (main_stack.empty())
-                        {
-                            break;
-                        }
-                    }
-                    main_stack.push(finalword);
+                    carrot_simplify(main_stack, finalword);
                 }
                 else
                 {
-                    products << "MALFORMED\n";
-                    break;
+                    products << "Malformed\n";
+                    already_Malformed = true;
                 }
             }
         }
-
+        if (already_Malformed)
+        {
+            expression.clear();
+            getline(infile, expression);
+            continue;
+        }
+        //makes sure there is nothing but the final word after evaluating the < > if there were any in the front
         if (main_stack.size() != 1)
         {
-            products << "MALFORMED\n";
-            break;
+            products << "Malformed\n";
         }
         else
         {
@@ -287,6 +159,22 @@ int main(int argc, char *argv[])
     }
 
     products.close();
+}
+
+
+void carrot_simplify(StackString &in, string &finalword)
+{
+    while (in.top() == "<" || in.top() == ">")
+    {
+
+        simplify(finalword, in.top());
+        in.pop();
+        //so that it wont throw exception if <> are the last strings on stack and won't try to access an empty list when calling top()
+        if (in.empty())
+            break;
+    }
+    in.push(finalword);
+    return;
 }
 
 /*
@@ -350,13 +238,119 @@ bool check_if_word(const string &in)
 }
 
 /*
-made a function to check if a stack is empty before calling top so I do not have to constantly type it
+starts evaluating after finding ')' 
 */
-void check_if_empty(StackString &in, ofstream &putout)
+bool evaluate(StackString &main_stack, stringstream &ParseStr, char &tempchar, string &finalword)
 {
-    if (in.empty())
+    int count = 0;
+    string prevoperator;
+    main_stack.push(string(1, tempchar)); //pushes ) to stack to then pop it
+    main_stack.pop();
+    if (main_stack.empty())
+        return false;
+
+    while (main_stack.top() != "(")
     {
-        putout << "MALFORMED\n";
-        std::exit(0);
+        //checks for if list is empty and closing parenthesis is not found
+        if (main_stack.empty())
+            return false;
+
+        string word2 = main_stack.top();
+        main_stack.pop();
+        if (!check_if_word(word2)) //want the first string to be a word
+        {
+            return false;
+        }
+
+        if (main_stack.empty())
+            return false;
+        string operator_ = main_stack.top();
+        if (count == 0)
+        {
+            prevoperator = operator_;
+        }
+        // take care of (<> word ) cases
+        if (operator_ == "(")
+        {
+            main_stack.pop();
+            main_stack.push(word2);
+            break;
+        }
+
+        if (operator_ == "<" || operator_ == ">")
+        {
+            carrot_simplify(main_stack, finalword);
+            if (main_stack.empty())
+                return false;
+            operator_ = main_stack.top();
+            if (count == 0)
+            {
+                prevoperator = operator_;
+            }
+        }
+        main_stack.pop();
+        if (check_if_word(operator_)) //we want the operator to actually be a + or -
+        {
+            return false;
+        }
+
+        if (operator_ == "+")
+        {
+            if (main_stack.empty())
+                return false;
+            string word1 = main_stack.top();
+            main_stack.pop();
+            if (!check_if_word(word2)) //want string after operator to be a word
+            {
+                return false;
+            }
+            simplify(word1, word2, finalword, operator_);
+            if (!main_stack.empty() && main_stack.top() == "(")
+            {
+                main_stack.pop();
+                main_stack.push(finalword);
+                break;
+            }
+            else
+            {
+                main_stack.push(finalword);
+                count++;
+                continue;
+            }
+        }
+
+        if (operator_ == "-")
+        {
+            if (prevoperator == "+") // checks if it is mixed with different operator
+            {
+                return false;
+            }
+            if (main_stack.empty())
+                return false;
+            string word1 = main_stack.top();
+            main_stack.pop();
+            if (!check_if_word(word2)) //want string after operator to be a word
+            {
+                return false;
+            }
+            if (!main_stack.empty() && (main_stack.top() == "<" || main_stack.top() == ">"))
+            {
+                carrot_simplify(main_stack, finalword);
+            }
+
+            if (!main_stack.empty() && main_stack.top() == "(")
+            {
+                simplify(word1, word2, finalword, operator_);
+                main_stack.pop();
+                main_stack.push(finalword);
+                break;
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
+    ParseStr >> tempchar;
+    return true;
 }
