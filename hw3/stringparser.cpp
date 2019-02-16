@@ -37,12 +37,12 @@ int main(int argc, char *argv[])
         return 0;
     }
 
-    ofstream products;
-    products.open(argv[2]);
+    ofstream ofile;
+    ofile.open(argv[2]);
 
     if (expression.empty())
     {
-        products << "\n";
+        ofile << "\n";
         getline(infile, expression);
     }
 
@@ -51,7 +51,7 @@ int main(int argc, char *argv[])
         StackString main_stack;
         if (expression.empty())
         {
-            products << "\n";
+            ofile << "\n";
             getline(infile, expression);
             continue;
         }
@@ -59,11 +59,14 @@ int main(int argc, char *argv[])
 
         char tempchar;
         string finalword;
+        //initial parsing; if does not work, the next while loop will not run
         ParseStr >> tempchar;
         bool already_Malformed = false;
 
+//this while continues the parsing
         while (!ParseStr.fail())
         {
+            //makes sure that the character is a valid input, if not , malform 
             if (!islower(tempchar))
             {
                 if (tempchar == '<' || tempchar == '>' || tempchar == '+' || tempchar == '(' || tempchar == '-')
@@ -74,9 +77,10 @@ int main(int argc, char *argv[])
                 }
                 if (tempchar == ')')
                 {
+                    //if we find a closed paren, we want to start evaluating until we find the first open paren
                     if (!evaluate(main_stack, ParseStr, tempchar, finalword))
                     {
-                        products << "Malformed\n";
+                        ofile << "Malformed\n";
                         already_Malformed = true;
                         break;
                     }
@@ -84,7 +88,7 @@ int main(int argc, char *argv[])
 
                 else
                 {
-                    products << "Malformed\n";
+                    ofile << "Malformed\n";
                     already_Malformed = true;
                     break;
                 }
@@ -92,6 +96,7 @@ int main(int argc, char *argv[])
 
             else
             {
+                //this while loop groups successive characters that are all letters and makes them into a string to push onto stack
                 finalword.clear();
                 while (islower(tempchar) && !ParseStr.fail())
                 {
@@ -100,6 +105,7 @@ int main(int argc, char *argv[])
                 }
                 if (!main_stack.empty() && (main_stack.top() == "<" || main_stack.top() == ">"))
                 {
+                    //evaluates the word if there are <  or > signs before it
                     carrot_simplify(main_stack, finalword);
                 }
                 else
@@ -109,6 +115,7 @@ int main(int argc, char *argv[])
             }
         }
 
+        //serves as a check if rogram through malformed earlier for current expression so that it does not throw more
         if (already_Malformed)
         {
             expression.clear();
@@ -116,13 +123,14 @@ int main(int argc, char *argv[])
             continue;
         }
 
+        //this checks for the case where you have < > outside parenthesis e.g. <>(sjd+ashdk)
         if (!main_stack.empty() && main_stack.size() != 1)
         {
             finalword = main_stack.top();
             main_stack.pop();
             if (!check_if_word(finalword))
             {
-                products << "Malformed\n";
+                ofile << "Malformed\n";
                 already_Malformed = true;
             }
             else
@@ -133,11 +141,12 @@ int main(int argc, char *argv[])
                 }
                 else
                 {
-                    products << "Malformed\n";
+                    ofile << "Malformed\n";
                     already_Malformed = true;
                 }
             }
         }
+     //this checks for the case where you have < > outside parenthesis e.g. <>(sjd+ashdk)
         if (already_Malformed)
         {
             expression.clear();
@@ -147,20 +156,23 @@ int main(int argc, char *argv[])
         //makes sure there is nothing but the final word after evaluating the < > if there were any in the front
         if (main_stack.size() != 1)
         {
-            products << "Malformed\n";
+            ofile << "Malformed\n";
         }
         else
         {
-            products << main_stack.top() << "\n";
+            ofile << main_stack.top() << "\n";
             main_stack.pop();
         }
         expression.clear();
         getline(infile, expression);
     }
 
-    products.close();
+    ofile.close();
 }
 
+/*
+point of this function is to continue evaluating a word until there are no carrots left
+*/
 void carrot_simplify(StackString &in, string &finalword)
 {
     while (in.top() == "<" || in.top() == ">")
@@ -335,6 +347,7 @@ bool evaluate(StackString &main_stack, stringstream &ParseStr, char &tempchar, s
                 return false;
             }
 
+            //checks the cases for when we have carrots in between to open parenthesis
             if (!main_stack.empty() && (main_stack.top() == "<" || main_stack.top() == ">"))
             {
                 while (main_stack.top() == "<" || main_stack.top() == ">")
