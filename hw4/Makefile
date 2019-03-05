@@ -5,11 +5,13 @@ CXXFLAGS=-g -Wall -std=c++11
 
 OBJS= bin/user.o bin/db_parser.o bin/product.o bin/product_parser.o bin/util.o bin/book.o bin/movie.o bin/clothing.o bin/mydatastore.o bin/amazon.o
 
+
 all: amazon
 
-amazon: $(OBJS)
+bin:
+	mkdir bin
+amazon: bin $(OBJS)
 	$(CXX) $(CXXFLAGS) $(DEFS) -o $@ $(OBJS)
-
 bin/user.o: user.cpp user.h 
 	$(CXX) $(CXXFLAGS) $(DEFS) -o $@ -c user.cpp
 bin/db_parser.o: db_parser.cpp db_parser.h product.h product_parser.h user.h datastore.h 
@@ -36,3 +38,4 @@ vgnd:
 clean:
 	rm -f *.o amazon
 	rm bin/*.o
+	rmdir bin
