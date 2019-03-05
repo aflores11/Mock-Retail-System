@@ -10,8 +10,6 @@ all: amazon
 amazon: $(OBJS)
 	$(CXX) $(CXXFLAGS) $(DEFS) -o $@ $(OBJS)
 
-bin/amazon.o: amazon.cpp db_parser.h datastore.h product_parser.h 
-	$(CXX) $(CXXFLAGS) $(DEFS) -o $@ -c amazon.cpp
 bin/user.o: user.cpp user.h 
 	$(CXX) $(CXXFLAGS) $(DEFS) -o $@ -c user.cpp
 bin/db_parser.o: db_parser.cpp db_parser.h product.h product_parser.h user.h datastore.h 
@@ -30,7 +28,8 @@ bin/product_parser.o: product_parser.cpp product_parser.h product.h
 	$(CXX) $(CXXFLAGS) $(DEFS) -o $@ -c product_parser.cpp
 bin/mydatastore.o: mydatastore.h mydatastore.cpp 
 	$(CXX) $(CXXFLAGS) -o $@ -c mydatastore.cpp
-
+bin/amazon.o: amazon.cpp db_parser.h datastore.h product_parser.h 
+	$(CXX) $(CXXFLAGS) $(DEFS) -o $@ -c amazon.cpp	
 vgnd:
 	valgrind --tool=memcheck --leak-check=yes ./amazon database.txt
 
