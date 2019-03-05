@@ -42,7 +42,6 @@ class MyDataStore : public DataStore{
         std::map<std::string, User*> allusers;
         std::map<std::string, std::set<Product*> > KeytoProd;
         std::map<std::string, std::vector<Product*> > userCart;
-        //std::map<std::string, int> itemsbought;
 
 };
 #endif

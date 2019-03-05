@@ -3,28 +3,7 @@
 #include <iostream>
 #include "product.h"
 
-/*
-Product(string category, string name, double price, int qty);
-    virtual ~Product();
 
-    virtual set<tring> keywords() const = 0;
-
-    virtual bool isMatch(vector<string>& searchTerms) const;
-
-    virtual std::string displayString() const = 0;
- 
-    virtual void dump(ostream& os) const;
-   
-    double getPrice() const;
-    std::string getName() const;
-    int getQty() const;
-    void subtractQty(int num);
-protected:
-    sstring name_;
-    double price_;
-    int qty_;
-    string category_;
-  */
 class Book : public Product
 {
 public:
