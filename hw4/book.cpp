@@ -57,7 +57,7 @@ std::string Book::displayString() const
 
     bookinfo = getName() + "\n" + "Author: " + author + " "
                                                         " ISBN: " +
-               isbn + "\n" + prc + " " + to_string(getQty()) + " " + "left\n";
+               isbn + "\n" + prc + " " + to_string(getQty()) + " " + "left.\n";
 
     return bookinfo;
 }

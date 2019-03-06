@@ -33,7 +33,7 @@ bin/mydatastore.o: mydatastore.h mydatastore.cpp
 bin/amazon.o: amazon.cpp db_parser.h datastore.h product_parser.h 
 	$(CXX) $(CXXFLAGS) $(DEFS) -o $@ -c amazon.cpp	
 vgnd:
-	valgrind --tool=memcheck --leak-check=yes ./amazon database.txt
+	valgrind --tool=memcheck -v --leak-check=yes ./amazon database.txt 
 
 clean:
 	rm -f *.o amazon

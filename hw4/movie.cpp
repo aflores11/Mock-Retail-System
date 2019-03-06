@@ -22,7 +22,7 @@ void tostring2(double num, string &in)
     }
 }
 
-Movie::Movie(const std::string category, const std::string name, double price, int qty, std::string rating, std::string genre) : Product(category, name, price, qty)
+Movie::Movie(const std::string category, const std::string name, double price, int qty, std::string genre, std::string rating) : Product(category, name, price, qty)
 {
     this->Rating = rating;
     this->Genre = genre;
@@ -54,7 +54,7 @@ std::string Movie::displayString() const
 
     Movieinfo = getName() + "\n" + "Genre: " + Genre + " " +
                 "Rating: " +
-                Rating + "\n" + prc + " " + to_string(getQty()) + " " + "left\n";
+                Rating + "\n" + prc + " " + to_string(getQty()) + " " + "left.\n";
 
     return Movieinfo;
 }

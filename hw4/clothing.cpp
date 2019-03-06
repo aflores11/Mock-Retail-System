@@ -55,7 +55,7 @@ std::string Clothing::displayString() const
 
     Clothinginfo = getName() + "\n" + "Size: " + Size + " " +
                    "Brand: " +
-                   Brand + "\n" + prc + " " + to_string(getQty()) + " " + "left\n";
+                   Brand + "\n" + prc + " " + to_string(getQty()) + " " + "left.\n";
 
     return Clothinginfo;
 }
