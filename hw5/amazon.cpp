@@ -90,11 +90,13 @@ int main(int argc, char *argv[])
 
     cout << "=====================================" << endl;
     cout << "Menu: " << endl;
+    cout << "  LOGIN username                     " << endl;
+    cout << "  LOGOUT                          "    << endl;
     cout << "  AND r/n term term ...                  " << endl;
     cout << "  OR r/n term term ...                   " << endl;
-    cout << "  ADD username search_hit_number     " << endl;
-    cout << "  VIEWCART username                  " << endl;
-    cout << "  BUYCART username                   " << endl;
+    cout << "  ADD search_hit_number     " << endl;
+    cout << "  VIEWCART                   " << endl;
+    cout << "  BUYCART                    " << endl;
     cout << "  QUIT new_db_filename               " << endl;
     cout << "====================================" << endl;
 
@@ -109,8 +111,31 @@ int main(int argc, char *argv[])
         string cmd;
         if ((ss >> cmd))
         {
-            if (cmd == "AND")
+            
+            if(cmd == "LOGIN")
             {
+                string usr_;
+                if (ss >> usr_)
+                {
+                    if(ds.find_user(usr_))
+                    {
+                        ds.loggedUser = usr_;
+                    }
+                    else{
+                        cout << "Invalid user\n";
+                    }
+                }
+            }
+            else if(cmd == "LOGOUT")
+            {
+                if(! ds.loggedUser.empty())
+                {
+                    ds.loggedUser.clear();
+                }
+            }
+            else if (cmd == "AND")
+            {
+                
                 char option;
                 
                 if(ss>>option)
@@ -173,15 +198,13 @@ int main(int argc, char *argv[])
                 done = true;
             }
             else if(cmd == "ADD"){
-                string userName;
-                if(ss >> userName)
+                
+                if(ds.loggedUser.empty())
                 {
-                    if(!ds.find_user(userName)) //checks if username exists
-                    {
-                        cout << "Invalid request\n";
-                    }
-                    else
-                    {
+                    cout << "No current user\n";
+                    continue;
+                }
+                        
                         int search_hit_num;
                         if(ss >> search_hit_num)
                         {
@@ -191,9 +214,9 @@ int main(int argc, char *argv[])
                             }
                             else
                             {
-                                vector<Product*> temp = ds.userCart[userName]; //copy our current cart to update it 
+                                vector<Product*> temp = ds.userCart[ds.loggedUser]; //copy our current cart to update it 
                                 temp.push_back(hits[search_hit_num - 1]); //subtract 1 to search hit because we are 0 indexed
-                                ds.userCart[userName] = temp; //overrides old cart with new cart
+                                ds.userCart[ds.loggedUser] = temp; //overrides old cart with new cart
                             }
 
                         } 
@@ -201,35 +224,31 @@ int main(int argc, char *argv[])
                         {
                             cout << "Invalid request\n";
                         }  
-                    }
-                }
+                    
+                
             }
             else if(cmd == "VIEWCART")
             {
-                string userName;
-                if(ss >> userName){
-                    if(!ds.find_user(userName)) //verifies user exists
-                    {
-                        cout << "Invalid username\n";
-                    }
-                    else
-                    {
-                        displayCart(ds.userCart[userName]); //implemented on bottom
-                        cout << "\n\n";
-                    }
+                if(ds.loggedUser.empty())
+                {
+                    cout << "No current user\n";
+                    continue;
                 }
+ 
+                displayCart(ds.userCart[ds.loggedUser]); //implemented on bottom
+                cout << "\n\n";
+                    
+                
             }
             else if(cmd == "BUYCART")
             {
-                string userName;
-                if(ss >> userName)
+                if(ds.loggedUser.empty())
                 {
-                    if(!ds.find_user(userName)) //verifies user exists
-                    {
-                        cout << "Invalid username\n";
-                    }
-                    else
-                    {
+                    cout << "No current user\n";
+                    continue;
+                }
+
+                        string userName = ds.loggedUser;
                         vector<int> indexes; //used to track index of products that are being bought
                         vector<Product*> cart = ds.userCart[userName]; 
                         
@@ -249,9 +268,7 @@ int main(int argc, char *argv[])
                             cart.erase(cart.begin() + indexes[i]); //erases products from cart from back to front so vector indexes do not mess up
                         }
                         ds.userCart[userName] = cart; //overrides old cart with updated cart
-                    
-                    }
-                }    
+                   
                     
             }
             else

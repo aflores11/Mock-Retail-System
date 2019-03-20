@@ -46,6 +46,7 @@ class MyDataStore : public DataStore{
         std::map<std::string, std::vector<Review*> > ProdReviews;
         std::set<Review*> allReviews;
         std::map<std::string, Product*> pNametoP; //makes a map of the products full name to its object pointer
+        std::string loggedUser;
 
                 
 
