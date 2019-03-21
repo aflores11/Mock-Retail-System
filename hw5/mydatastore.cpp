@@ -214,4 +214,80 @@ string MyDataStore::AvgRating(std::string productName)
 
         return dummy.str();
     }
+
+bool MyDataStore::checkdate(std::string &in)
+{
+    if(in.size() != 10) return false;
+    stringstream ss(in);
+    char temp;
+    for(int i =0; i<4;i++) //checks year
+    {
+        if(ss>>temp)
+        {
+            if(temp<=47 ||temp>=58) return false;
+        }  
+        else return false; 
+    }
+    if(ss>>temp) //make sure there is dash
+    {
+        if(temp != '-') return false;
+    }
+    char m1dig = 126; //set to dummy char '~'
+    char m2dig =126;// holds second digit of the month
+
+    if(ss>>temp) //checks month first digit
+    {
+        if(temp <= 47 || temp >= 50) return false; // 0 to 1 inclusive
+        m1dig = temp;
+    }
+    if(ss>>temp) //checks month second digit
+    {
+        if(temp<=47 ||temp>=58) return false;
+        if(m1dig == '0' && temp == '0') return false;
+        else if(m1dig == '1')
+        {
+            if(temp <=47 || temp > 51) return false; //has to be between 0 and 2 inclusive
+            m2dig=temp;
+        }
+        else m2dig = temp;
+    }  
+    if(ss>>temp) //make sure there is dash
+    {
+        if(temp != '-') return false;
+    }
+    char d1dig; // holds first digit of date
+    if(ss>>temp)//check date first digit
+    {
+        if(temp <=47 || temp >= 52) return false; // 0 to 3 inclusive
+        if(m1dig == '0'&& m2dig == '2')
+        {
+            if(temp == '3') return false;
+            d1dig = temp;
+        }
+        else
+        {
+            d1dig = temp;
+        } 
+    }  
+    if(ss>>temp)//check date second digit
+    {
+        if(temp <= 47 || temp >= 58) return false; // 0 to 9 inclusive
+        if(m1dig == '0'&& m2dig == '2' && d1dig == '2')
+        {
+            if(temp<=47 || temp >= 57) return false;
+        }
+        else if ((m1dig == '0' && m2dig == '4') || (m1dig == '0' && m2dig == '6') || (m1dig == '0' && m2dig == '9') || (m1dig == '1' && m2dig == '1')) 
+        {
+            if(d1dig == '3' && temp != '0') return false;
+        } 
+         else if ((m1dig == '0' && m2dig == '1') || (m1dig == '0' && m2dig == '3') || (m1dig == '0' && m2dig == '5') || (m1dig == '0' && m2dig == '7') || (m1dig == '0' && m2dig == '8') || (m1dig == '1' && m2dig == '0')  || (m1dig == '1' && m2dig == '2') )
+         {
+            if(d1dig == '3' && ( temp <= 47 || temp >= 50)) return false; 
+         }
+    } 
+
+
+    return true;
+}
+    
         

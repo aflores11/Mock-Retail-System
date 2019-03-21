@@ -40,6 +40,15 @@ struct ByRating {
     
   }
 };
+
+struct ByDate {
+  bool operator()(Review* a, Review* b)
+  {
+
+    return a->date > b->date;
+    
+  }
+};
 //////////////////////
 
 struct ProdNameSorter
@@ -52,6 +61,8 @@ struct ProdNameSorter
 void displayProducts(vector<Product *> &hits, char in); // used for searching AND/OR r/n
 void displayProducts(vector<Product *> &hits); // used for displaying cart when checking out
 void displayCart(vector<Product *> &hits);
+void revDump(std::ostream &os, std::string &name, const vector<Review*> temp);
+
 
 int main(int argc, char *argv[])
 {
@@ -94,9 +105,11 @@ int main(int argc, char *argv[])
     cout << "  LOGOUT                          "    << endl;
     cout << "  AND r/n term term ...                  " << endl;
     cout << "  OR r/n term term ...                   " << endl;
-    cout << "  ADD search_hit_number     " << endl;
-    cout << "  VIEWCART                   " << endl;
-    cout << "  BUYCART                    " << endl;
+    cout << "  ADD search_hit_number     "              << endl;
+    cout << "  VIEWCART                   "           << endl;
+    cout << "  BUYCART                    "            << endl;
+    cout << "  ADDREV seach_hit_number rating date review_text  " << endl;
+    cout << "  VIEWREV seach_hit_number           " << endl;
     cout << "  QUIT new_db_filename               " << endl;
     cout << "====================================" << endl;
 
@@ -271,6 +284,72 @@ int main(int argc, char *argv[])
                    
                     
             }
+            else if(cmd == "ADDREV")
+            {
+                if(ds.loggedUser.empty())
+                {
+                    cout << "No current user\n";
+                    continue;
+                }
+                int hitnum;
+                if(ss >> hitnum)
+                {
+                    if(hitnum > (int)hits.size()) //checks if user choosing a valid found item
+                        {
+                            cout << "Invalid request\n";
+                            continue;
+                        }
+                    else
+                    {
+                        int rating;
+                        string text, date;
+
+                        string pname = hits[hitnum-1]->getName();
+                        vector<Review*> temp = ds.ProdReviews[pname];
+                        ss>>rating;
+                        if(ss.fail() || (rating <0 || rating >5)) continue; 
+                        ss>>date;
+                        if(ss.fail() || !ds.checkdate(date)) continue;
+                        
+                        if(getline(ss, text))
+                        {
+                            text = trim(text);
+                        }
+                        Review* rev = new Review(rating, ds.loggedUser, date, text);
+                        ds.allReviews.insert(rev);
+                        temp.push_back(rev);
+                        ds.ProdReviews[pname] = temp;
+                    }    
+                }
+                else
+                {
+                    continue;
+                }
+            }
+            else if(cmd == "VIEWREV")
+            {
+                if(ds.loggedUser.empty())
+                {
+                    cout << "No current user\n";
+                    continue;
+                }
+                int hitnum;
+                if(ss >> hitnum)
+                {
+                    if(hitnum > (int)hits.size()) //checks if user choosing a valid found item
+                        {
+                            cout << "Invalid request\n";
+                            continue;
+                        }
+                    else
+                    {
+                        string _name = hits[hitnum-1]->getName();
+                        revDump(cout, _name, ds.ProdReviews[_name]);
+                    }    
+                }
+
+
+            }
             else
             {
                 cout << "Unknown command" << endl;
@@ -328,4 +407,16 @@ void displayCart(vector<Product *> &cart)
         cout << endl;
         resultNo++;
     }
+}
+
+void revDump(std::ostream &os, std::string &name, const vector<Review*> temp)
+{
+    vector<Review*> srted = temp;
+    mergeSort(srted, ByDate());
+    for(int i=0; i<(int)srted.size(); i++)
+    {
+        os << srted[i]->rating << " " << srted[i]->username << " " << srted[i]->date << " "
+         << srted[i]->reviewText << "\n";
+    }
+
 }

@@ -62,5 +62,7 @@ class MyDataStore : public DataStore{
 
          std::string AvgRating(std::string productName);
 
+         bool checkdate(std::string &in); // used to check if date provided is valid
+
 };
 #endif

@@ -1,7 +1,6 @@
 #include <sstream>
 #include <iomanip>
 #include "product.h"
-#include "mydatastore.h"
 
 using namespace std;
 
