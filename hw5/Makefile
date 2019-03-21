@@ -41,3 +41,7 @@ clean:
 	rm -f *.o amazon
 	rm bin/*.o
 	rmdir bin
+	
+
+sortcomp: sortcomp.cpp
+	g++ -g -Wall -std=c++11 sortcomp.cpp -o sortcomp

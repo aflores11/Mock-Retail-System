@@ -174,12 +174,12 @@ void MyDataStore::addReview(const std::string& prodName, int rating, const std::
 			                const std::string& date, const std::string& review_text)
 {
     
-    if(pNametoP.find(prodName) == pNametoP.end()) return;
+    if(pNametoP.find(prodName) == pNametoP.end()) return; // checks if product exists 
 
     Review* temp = new Review(rating, username, date, review_text);
     allReviews.insert(temp);
 
-    if(ProdReviews.find(prodName) == ProdReviews.end() )
+    if(ProdReviews.find(prodName) == ProdReviews.end() ) //makes a new review vector if a product has no reviews
     {
         vector<Review*> NewVec;
         NewVec.push_back(temp);
@@ -187,7 +187,7 @@ void MyDataStore::addReview(const std::string& prodName, int rating, const std::
         pNametoP[prodName]->Rating_= AvgRating(prodName);
 
     }
-    else
+    else //updates the vector of reviews with newest addition
     {
         vector<Review*> NewVec = ProdReviews[prodName];
         NewVec.push_back(temp);
@@ -272,17 +272,18 @@ bool MyDataStore::checkdate(std::string &in)
     if(ss>>temp)//check date second digit
     {
         if(temp <= 47 || temp >= 58) return false; // 0 to 9 inclusive
-        if(m1dig == '0'&& m2dig == '2' && d1dig == '2')
+        
+        if(m1dig == '0'&& m2dig == '2' && d1dig == '2') //case for February
         {
-            if(temp<=47 || temp >= 57) return false;
+            if(temp<=47 || temp >= 57) return false; // can't pass 28
         }
         else if ((m1dig == '0' && m2dig == '4') || (m1dig == '0' && m2dig == '6') || (m1dig == '0' && m2dig == '9') || (m1dig == '1' && m2dig == '1')) 
         {
-            if(d1dig == '3' && temp != '0') return false;
+            if(d1dig == '3' && temp != '0') return false; //months that only go up to 30
         } 
          else if ((m1dig == '0' && m2dig == '1') || (m1dig == '0' && m2dig == '3') || (m1dig == '0' && m2dig == '5') || (m1dig == '0' && m2dig == '7') || (m1dig == '0' && m2dig == '8') || (m1dig == '1' && m2dig == '0')  || (m1dig == '1' && m2dig == '2') )
          {
-            if(d1dig == '3' && ( temp <= 47 || temp >= 50)) return false; 
+            if(d1dig == '3' && ( temp <= 47 || temp >= 50)) return false;  // months that go up to 31
          }
     } 
 

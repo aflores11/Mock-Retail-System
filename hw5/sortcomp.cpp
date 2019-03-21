@@ -4,29 +4,69 @@
 #include <algorithm>
 #include <cctype>
 #include <vector>
+#include"util.h"
 
 using namespace std;
+
+// Used from http://stackoverflow.com/questions/216823/whats-the-best-way-to-trim-stdstring
+// trim from start
+std::string &ltrim(std::string &s)
+{
+    s.erase(s.begin(),
+            std::find_if(s.begin(),
+                         s.end(),
+                         std::not1(std::ptr_fun<int, int>(std::isspace))));
+    return s;
+}
+
+// trim from end
+std::string &rtrim(std::string &s)
+{
+    s.erase(
+        std::find_if(s.rbegin(),
+                     s.rend(),
+                     std::not1(std::ptr_fun<int, int>(std::isspace)))
+            .base(),
+        s.end());
+    return s;
+}
+
+// trim from both ends
+std::string &trim(std::string &s)
+{
+    return ltrim(rtrim(s));
+}
 
 
 struct Comp2 {
   bool operator()(std::string a, std::string b)
   {
-    // Complete the code
-    
+    return a > b;
   }
 };
+
 struct Comp3 {
   bool operator()(std::string a, std::string b)
   {
-    // Complete the code
-    
+    for(int i=0 ; i<(int)a.size(); i++)
+    {
+      a[i] = tolower(a[i]);
+    }
+   
+    for(int i=0 ; i<(int)b.size(); i++)
+    {
+      b[i] = tolower(b[i]);
+    }
+
+    return a<b;
   }
 };
 struct Comp4 {
   bool operator()(std::string a, std::string b)
   {
-    // Complete the code
-    
+    trim(a);
+    trim(b);
+    return a<b;    
   }
 };
 
@@ -41,6 +81,8 @@ void outputWords(std::ostream& ostr, const std::vector<std::string>& words)
   ostr << endl;
 }
 
+
+
 int main(int argc, char* argv[])
 {
   if(argc < 2){
@@ -52,8 +94,9 @@ int main(int argc, char* argv[])
     cout << "Cannot open file for writing." << endl;
     return 1;
   }
-  vector<string> mywords =
-    { "abc", "Acc", "aBc", "Zxy", "zyx", "  efg" };
+  
+  vector<string> mywords = 
+  { "abc", "Acc", "aBc", "Zxy", "zyx", "  efg" };
 
   // Sort mywords in normal alphabetic/lexicographic string
   // comparison order.  Ascending from smallest to largest

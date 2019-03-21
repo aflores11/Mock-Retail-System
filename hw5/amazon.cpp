@@ -18,7 +18,7 @@
 #include <cctype>
 
 using namespace std;
-// Functors
+/***************************************** Functors ************************************/
 struct ByName {
   bool operator()(Product* a, Product* b)
   {
@@ -50,7 +50,7 @@ struct ByDate {
     
   }
 };
-//////////////////////
+/***************************************************************************/
 
 struct ProdNameSorter
 {
@@ -141,11 +141,11 @@ int main(int argc, char *argv[])
                     }
                 }
             }
-            else if(cmd == "LOGOUT")
+            else if(cmd == "LOGOUT") 
             {
                 if(! ds.loggedUser.empty())
                 {
-                    ds.loggedUser.clear();
+                    ds.loggedUser.clear(); //clears the string that holds the username of the user
                 }
             }
             else if (cmd == "AND")
@@ -184,7 +184,7 @@ int main(int argc, char *argv[])
                     {
 
                     } 
-                    else continue;
+                    else continue;//if it is not one of those two, it is invalid
                 }
                 else continue;
                 
@@ -306,6 +306,7 @@ int main(int argc, char *argv[])
                     
                         string text, date, rating;
 
+                    //parse required info to from line to make review
                         string pname = hits[hitnum-1]->getName();
                         vector<Review*> temp = ds.ProdReviews[pname];
                         ss>>rating;
@@ -321,11 +322,11 @@ int main(int argc, char *argv[])
                         {
                             text = trim(text);
                         }
-                        int rt = stoi(rating);
+                        int rt = stoi(rating); 
                         Review* rev = new Review(rt, ds.loggedUser, date, text);
-                        ds.allReviews.insert(rev);
+                        ds.allReviews.insert(rev); //add it to Review set to deallocate later
                         temp.push_back(rev);
-                        ds.ProdReviews[pname] = temp;
+                        ds.ProdReviews[pname] = temp; //update the products vector of reviews
                     }    
                 }
                 else
@@ -366,6 +367,7 @@ int main(int argc, char *argv[])
     return 0;
 }
 
+//this display is used for when sorting 
 void displayProducts(vector<Product *> &hits, char in)
 {
     int resultNo = 1;
@@ -387,6 +389,7 @@ void displayProducts(vector<Product *> &hits, char in)
     }
 }
 
+//this one is used for showing the cart of the user
 void displayProducts(vector<Product *> &hits)
 {
     int resultNo = 1;
@@ -416,6 +419,7 @@ void displayCart(vector<Product *> &cart)
     }
 }
 
+//Displays reviews from most recent to oldest 
 void revDump(std::ostream &os, std::string &name, const vector<Review*> temp)
 {
     vector<Review*> srted = temp;
@@ -428,6 +432,7 @@ void revDump(std::ostream &os, std::string &name, const vector<Review*> temp)
 
 }
 
+//used for when getting the rating of a new review to make sure an int was provided and not anything else
 bool checkifint(std::string &in)
 {
     for(int i=0 ; i<(int)in.size(); i++)
