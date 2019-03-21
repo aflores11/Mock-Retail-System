@@ -15,6 +15,7 @@
 #include "mydatastore.h"
 #include "msort.h"
 #include <string>
+#include <cctype>
 
 using namespace std;
 // Functors
@@ -62,6 +63,7 @@ void displayProducts(vector<Product *> &hits, char in); // used for searching AN
 void displayProducts(vector<Product *> &hits); // used for displaying cart when checking out
 void displayCart(vector<Product *> &hits);
 void revDump(std::ostream &os, std::string &name, const vector<Review*> temp);
+bool checkifint(std::string &in);
 
 
 int main(int argc, char *argv[])
@@ -301,13 +303,17 @@ int main(int argc, char *argv[])
                         }
                     else
                     {
-                        int rating;
-                        string text, date;
+                    
+                        string text, date, rating;
 
                         string pname = hits[hitnum-1]->getName();
                         vector<Review*> temp = ds.ProdReviews[pname];
                         ss>>rating;
-                        if(ss.fail() || (rating <0 || rating >5)) continue; 
+                        if(ss.fail() || !checkifint(rating))
+                        { 
+                            cout << "Invalid Rating\n";
+                            continue;
+                        } 
                         ss>>date;
                         if(ss.fail() || !ds.checkdate(date)) continue;
                         
@@ -315,7 +321,8 @@ int main(int argc, char *argv[])
                         {
                             text = trim(text);
                         }
-                        Review* rev = new Review(rating, ds.loggedUser, date, text);
+                        int rt = stoi(rating);
+                        Review* rev = new Review(rt, ds.loggedUser, date, text);
                         ds.allReviews.insert(rev);
                         temp.push_back(rev);
                         ds.ProdReviews[pname] = temp;
@@ -419,4 +426,14 @@ void revDump(std::ostream &os, std::string &name, const vector<Review*> temp)
          << srted[i]->reviewText << "\n";
     }
 
+}
+
+bool checkifint(std::string &in)
+{
+    for(int i=0 ; i<(int)in.size(); i++)
+    {
+        if(in[i]<=48 || in[i] >=54) return false;
+    }
+
+    return true;
 }
