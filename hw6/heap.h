@@ -15,10 +15,14 @@ class Heap
   {
     this->m_ary = m;
     this->comp = c;
+    //myheap = new std::vector<T>;
   }
 
   /// Destructor as needed
-  ~Heap();
+  ~Heap()
+  {
+
+  }
 
   /// Adds an item
   void push(const T& item);
@@ -51,8 +55,11 @@ class Heap
 template <typename T, typename PComparator>
 void Heap<T,PComparator>::trickleup(int pos)
 {
-  int parent = (pos/(this->m_ary)) -1 ;
-  if(pos >= 0 && this->comp(this->myheap[pos], this->myheap[parent])) // base case since we cannot work on empty list
+  if(pos == 0) return;
+
+//same thing as (pos/m-ary) -1  but if you do it that way, you run the risk of parent = a number < 0 
+  int parent = (pos-1)/this->m_ary;
+  if(pos > 0 && this->comp(this->myheap[pos], this->myheap[parent])) // base case since we cannot work on empty list
   {
     std::swap(this->myheap[pos] , this->myheap[parent]); //based on comparison, if child  needs to be before the parent, swap
     trickleup(parent); // calls trickle up again on the newly moved parent
@@ -62,26 +69,26 @@ void Heap<T,PComparator>::trickleup(int pos)
 template <typename T, typename PComparator>
 void Heap<T,PComparator>::heapify(int pos)
 {
-  if((pos*this->m_ary) + 1 < this->myheap.size()) //makes sure curr position is not a leaf node
+  if((pos*this->m_ary) + 1  < (int)this->myheap.size()) //makes sure curr position is not a leaf node
   {
-    int child = pos*(this->m_ary) +1; //one child is gauranteed
+    int child = pos*(this->m_ary) +1; //one child is gauranteed, also sets it to first child
     for(int i = child+1; i< child + this->m_ary; i++ )
     {
-      if(i >= this->myheap.size()) break; // makes sure we only look at children that exist
+      if(i >= (int)this->myheap.size()) break; // makes sure we only look at children that exist
       //next line checks if two chldren are tied, if so child stays the left most child
-      if(this->comp(this->myheap[child], this->myheap[i]) && this->comp(this->myheap[i], this->myheap[child])) continue;
-      else if(this->comp(this->myheap[child], this->myheap[i]))
+      if(this->comp(this->myheap[child], this->myheap[i]) == this->comp(this->myheap[i], this->myheap[child])) continue;
+      else if(!this->comp(this->myheap[child], this->myheap[i]))
       {
         child = i;
       }
     }
 
-    if(this->comp(this->myheap[pos], this->myheap[child]))
+    if(!this->comp(this->myheap[pos], this->myheap[child]))
     {
         std::swap(this->myheap[pos], this->myheap[child]);
+        heapify(child);
     }
 
-    heapify(child);
   }
 }
 
