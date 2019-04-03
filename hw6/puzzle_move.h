@@ -2,6 +2,7 @@
 #define PUZZLEMOVE_H
 #include "board.h"
 #include "puzzle_heur.h"
+#include <map>
 
 using namespace std;
 
@@ -14,10 +15,11 @@ struct PuzzleMove
   int h;         // heuristic distance to the goal
   int f_score;   //calculates f score of board;
   PuzzleMove *prev;  // Pointer to parent PuzzleMove
+  std::map<int, Board*> nextBoards; 
 
 
   // Constructor for starting Board (i.e. initial move)
-  PuzzleMove(Board* board, PuzzleHeuristic* ph);
+  PuzzleMove(Board* board /*, PuzzleHeuristic* ph*/);
 
   // Constructor for subsequent search boards 
   // (i.e. those returned by Board::potentialMoves() )
