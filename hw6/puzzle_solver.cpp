@@ -11,7 +11,7 @@ PuzzleSolver::PuzzleSolver(const Board &b, PuzzleHeuristic* ph)
 {
     this->b_= new Board(b);
     this->ph_ = ph;
-
+    this->expansions_=0;
 
 }
 
@@ -29,7 +29,7 @@ PuzzleSolver::~PuzzleSolver()
 
 void PuzzleSolver::run()
 {
-    Heap< PuzzleMove*, PuzzleMoveScoreComp > open_list(2,PuzzleMoveScoreComp());
+    Heap< PuzzleMove*, PuzzleMoveScoreComp > open_list(2);
 
     /*Creates the starting puzzlemove and pushes it into both lists*/
     PuzzleMove* start = new PuzzleMove(this->b_);
@@ -51,6 +51,7 @@ void PuzzleSolver::run()
                 this->solution_.push_back(tracker->tileMove); 
                 tracker = tracker->prev;  
             }
+            
             return;
         }
 
@@ -92,7 +93,7 @@ std::deque<int> PuzzleSolver::getSolution()
     return this->solution_;
 }
 
-int PuzzleSolver::getNumExpansions()
+int PuzzleSolver::getNumExpansions() const
 {
     return this->expansions_;
 }

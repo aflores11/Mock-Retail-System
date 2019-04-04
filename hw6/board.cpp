@@ -8,6 +8,90 @@
 #include "board.h"
 using namespace std;
 
+//helper function to find boundaries to get potential boards
+void find_boundaries(int* pot, int loc, int dim)
+{
+  if(loc/dim == 0) //edge case for top row
+  {
+    if(loc%dim== dim-1) //top right corner
+    {
+      pot[0] = loc-1; //gets left tile
+      pot[1] = -5; //gets right tile // out of bounds
+      pot[2] = -5; //gets tile above
+      pot[3] = loc+dim; // gets tile below 
+      return;
+    }
+    else if(loc%dim== 0) //top left  corner
+    {
+      pot[0] = -5; // left tile out of bounds
+      pot[1] = loc+1; //gets right tile 
+      pot[2] = -5; //gets tile above
+      pot[3] = loc+dim; // gets tile below 
+      return;
+    }
+    else
+    {
+      pot[0] = loc-1; // left tile
+      pot[1] = loc+1; //gets right tile 
+      pot[2] = -5; // tile above out of bunds
+      pot[3] = loc+dim; // gets tile below 
+    }  
+  }
+
+  else if(loc/dim == dim-1) //bottom row
+  {
+    if(loc%dim== dim-1) //bottom right corner
+    {
+      pot[0] = loc-1; //gets left tile
+      pot[1] = -5; //gets right tile // out of bounds
+      pot[2] = loc - dim; //gets tile above
+      pot[3] = -5; // gets tile below 
+      return;
+    }
+    else if(loc%dim== 0) //top left  corner
+    {
+      pot[0] = -5; // left tile out of bounds
+      pot[1] = loc+1; //gets right tile 
+      pot[2] = loc-dim; //gets tile above
+      pot[3] = -5; // gets tile below 
+      return;
+    }
+    else
+    {
+      pot[0] = loc-1; // left tile
+      pot[1] = loc+1; //gets right tile 
+      pot[2] = loc-dim; // tile above out of bunds
+      pot[3] = -5; // gets tile below 
+    }  
+  }
+
+  else if(loc%dim == 0) //left column , but no need to worry about corners anymore
+  {
+      pot[0] = -5; // left tile out of bounds
+      pot[1] = loc+1; //gets right tile 
+      pot[2] = loc-dim; // tile above out of bunds
+      pot[3] = loc+dim; // gets tile below 
+      return;
+  }
+  else if(loc%dim == dim-1) // right column, no need to worry about corners
+  {
+      pot[0] = loc-1; // left tile out of bounds
+      pot[1] = -5; // right tile  out of bounds
+      pot[2] = loc-dim; // tile above out of bunds
+      pot[3] = loc+dim; // gets tile below
+      return; 
+  }
+  else // anywhere that's not on the edges
+  {
+      pot[0] = loc-1; // left tile out of bounds
+      pot[1] = loc+1; // right tile  out of bounds
+      pot[2] = loc-dim; // tile above out of bunds
+      pot[3] = loc+dim; // gets tile below
+      return;
+  }
+  
+}
+
 
 Board::Board(int dim, int numInitMoves, int seed )
 {
@@ -105,32 +189,17 @@ map<int, Board*> Board::potentialMoves() const
   }
 
   int pottiles[4]; //holds potential tiles that can be moved, there are a max of 4
-  
-/*
-Befor sleeping
-    case to set pottiles will be check each corner since they can only have max of two moves 
-    case that they are on the top or bottom row or left or right col but not corner, they can have max 3 moves
-
-*/
-
-  if((loc/this->dim() == 0 || loc/this->dim() == this->dim()-1) && loc%this->dim() == dim()-1) //edge case for left borders
-  {
-
-  }
-  pottiles[0] = loc-1; //gets left tile
-  pottiles[1] = loc+1; //gets right tile
-  pottiles[2] = loc - (int)this->dim(); //gets tile above
-  pottiles[3] = loc+(int)this->dim(); // gets tile below
+  find_boundaries(pottiles, loc, this->dim() );
 
   map<int, Board*> results;
 
   for(int i= 0; i<4; i++)
   {
-    if((pottiles[i] >=0 || pottiles[i] < (int)this->size()) ) //only creates new boards for valid tiles that are in bounds
+    if((pottiles[i] >=0 && pottiles[i] < (int)this->size()) ) //only creates new boards for valid tiles that are in bounds
     {
       Board* temp = new Board(*this); //makes a copy of current board
       temp->move(this->tiles_[pottiles[i]]); // moves the curr potential tile and swaps with empty space
-      results.insert(std::pair<int, Board*>(pottiles[i], temp)); // push the new board to map
+      results.insert(std::pair<int, Board*>(this->tiles_[pottiles[i]], temp)); // push the new board to map
     }
   }
 
@@ -197,6 +266,8 @@ bool Board::operator<(const Board& rhs) const
 {
   for(int i =0 ; i<this->size(); i++)
   {
+    if(this->tiles_[i] == rhs.tiles_[i]) continue; // if equal, goes to next one
+    if(this->tiles_[i] > rhs.tiles_[i]) return false; //if lhs is >, then it is not less than board 2 
     if(this->tiles_[i] < rhs.tiles_[i]) return true; // if this board tile is greater return false
   } 
 
@@ -226,3 +297,4 @@ std::ostream& operator<<(std::ostream &os, const Board &b)
 
   return os;
 }
+

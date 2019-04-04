@@ -15,13 +15,12 @@ class Heap
   {
     this->m_ary = m;
     this->comp = c;
-    //myheap = new std::vector<T>;
   }
 
   /// Destructor as needed
   ~Heap()
   {
-
+    this->myheap.clear();
   }
 
   /// Adds an item

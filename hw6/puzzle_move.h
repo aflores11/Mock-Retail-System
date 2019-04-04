@@ -19,11 +19,11 @@ struct PuzzleMove
 
 
   // Constructor for starting Board (i.e. initial move)
-  PuzzleMove(Board* board /*, PuzzleHeuristic* ph*/);
+  PuzzleMove(Board *board /*, PuzzleHeuristic* ph*/);
 
   // Constructor for subsequent search boards 
   // (i.e. those returned by Board::potentialMoves() )
-  PuzzleMove(int tile, Board* board, PuzzleMove *parent);
+  PuzzleMove(int tile, Board *board, PuzzleMove *parent);
 
   // Destructor
   ~PuzzleMove();
@@ -42,7 +42,7 @@ struct PuzzleMoveScoreComp
     // by returning true when m1's tileMove is less than m2's.
 
     if(m1->f_score < m2->f_score) return true;
-    else if( (m1->f_score == m2->f_score) && (m1-> h < m2->h) ) return true; 
+    else if( (m1->f_score == m2->f_score) && ((m1->h) < (m2->h) ) ) return true; 
     else
     {
       if( (m1->f_score == m2->f_score) && (m1-> h == m2->h) ) return m1->tileMove < m2->tileMove;
@@ -59,7 +59,7 @@ struct PuzzleMoveBoardComp
     // Add code to check if m1's board is "less-than" m2's board by 
     // using the Board class' operator<()
 
-  return m1->b < m2->b ;
+  return *( m1->b) < *(m2->b) ;
 
 
   }

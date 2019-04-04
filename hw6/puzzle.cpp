@@ -28,9 +28,9 @@ int main(int argc, char *argv[])
 
   
   
-  Board game(size, initMoves, seed);
+   Board* game = new Board(size, initMoves, seed);
 
-  cout << game << endl; 
+  cout << *game << endl; 
 
   bool endgame = false;
 
@@ -41,7 +41,17 @@ int main(int argc, char *argv[])
 
     cin >> playermove;
 
-    
+    try
+    {
+      if(cin.fail()) throw notanumber();
+    }
+    catch(notanumber &e)
+    {
+      cin.clear();
+      cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+      continue;
+
+    }
 
     if(playermove == 0) endgame =true;
 
@@ -49,9 +59,9 @@ int main(int argc, char *argv[])
     {
       PuzzleHeuristic* myheur;
       givememyheur(myheur, heur);
-      PuzzleSolver cheat(game, myheur);
-      cheat.run();
-      deque<int> sol = cheat.getSolution();
+      PuzzleSolver* cheat = new PuzzleSolver(*game, myheur);
+      cheat->run();
+      deque<int> sol = cheat->getSolution();
       cout << "Try this sequence:\n";
       while(!sol.empty())
       {
@@ -59,33 +69,36 @@ int main(int argc, char *argv[])
         sol.pop_back();
       }
       cout << endl;
-      cout << "(Expansions ="<< cheat.getNumExpansions() << ")" << endl << endl;
-      cout <<game<<endl;
+      int exp = cheat->getNumExpansions();
+      cout << "(Expansions = " << exp << ")" << endl << endl;
+      cout << *game << endl;
+      delete myheur;
+      delete cheat;
     }
 
-    else if(playermove>0 && playermove<game.size())
+    else if(playermove>0 && playermove<game->size())
     {
-      game.move(playermove);
-      cout << game << endl;
-      if(game.solved()) endgame = true;
+      game->move(playermove);
+      cout << *game << endl;
+      if(game->solved()) endgame = true;
     }
 
     else
     {
-
+      continue;
     }
 
 
   }
 
+  delete game;
 
   return 0;
 }
 
 void givememyheur(PuzzleHeuristic* &in, int &num)
 {
-  if(num ==0) in = new PuzzleBFSHeuristic();
-  else if(num == 1) in = new PuzzleOutOfPlaceHeuristic();
-  else in = new PuzzleManhattanHeuristic();
-
+  if(num ==0) in = new PuzzleBFSHeuristic;
+  else if(num == 1) in = new PuzzleOutOfPlaceHeuristic;
+  else in = new PuzzleManhattanHeuristic;
 }
