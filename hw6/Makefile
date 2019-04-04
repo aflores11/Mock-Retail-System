@@ -23,7 +23,7 @@ bin/puzzle.o: puzzle.cpp board.h puzzle_solver.h
 	$(CXX) $(CXXFLAGS) -o $@ -c puzzle.cpp	
 
 vgnd:
-	valgrind --tool=memcheck -v --leak-check=yes ./puzzle 
+	valgrind --tool=memcheck --leak-check=yes ./puzzle 3 70 1711 1
 
 clean:
 	rm -f *.o puzzle

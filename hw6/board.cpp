@@ -106,6 +106,17 @@ map<int, Board*> Board::potentialMoves() const
 
   int pottiles[4]; //holds potential tiles that can be moved, there are a max of 4
   
+/*
+Befor sleeping
+    case to set pottiles will be check each corner since they can only have max of two moves 
+    case that they are on the top or bottom row or left or right col but not corner, they can have max 3 moves
+
+*/
+
+  if((loc/this->dim() == 0 || loc/this->dim() == this->dim()-1) && loc%this->dim() == dim()-1) //edge case for left borders
+  {
+
+  }
   pottiles[0] = loc-1; //gets left tile
   pottiles[1] = loc+1; //gets right tile
   pottiles[2] = loc - (int)this->dim(); //gets tile above
@@ -115,10 +126,10 @@ map<int, Board*> Board::potentialMoves() const
 
   for(int i= 0; i<4; i++)
   {
-    if(pottiles[i] >=0 || pottiles[i] < (int)this->size()) //only creates new boards for valid tiles that are in bounds
+    if((pottiles[i] >=0 || pottiles[i] < (int)this->size()) ) //only creates new boards for valid tiles that are in bounds
     {
       Board* temp = new Board(*this); //makes a copy of current board
-      temp->move(pottiles[i]); // moves the curr potential tile and swaps with empty space
+      temp->move(this->tiles_[pottiles[i]]); // moves the curr potential tile and swaps with empty space
       results.insert(std::pair<int, Board*>(pottiles[i], temp)); // push the new board to map
     }
   }
@@ -198,9 +209,13 @@ std::ostream& operator<<(std::ostream &os, const Board &b)
   for (int rows = 0; rows<b.dim(); rows++)
   {
     os << "|";
-    for(int cols = rows*b.dim(); cols<b.dim(); cols++)
+    for(int cols = rows*b.dim(); cols<rows*b.dim()+b.dim(); cols++)
     {
-      if(b.tiles_[cols] == 0) os << "  |";
+      if(b.tiles_[cols] == 0) 
+      {
+        os << "  |";
+        continue;
+      }
       
       os << " " << b.tiles_[cols] << "|"; 
     }
@@ -208,6 +223,6 @@ std::ostream& operator<<(std::ostream &os, const Board &b)
     b.printRowBanner(os);
 
   }
-  b.printRowBanner(os);
+
   return os;
 }

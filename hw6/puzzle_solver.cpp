@@ -30,12 +30,12 @@ PuzzleSolver::~PuzzleSolver()
 void PuzzleSolver::run()
 {
     Heap< PuzzleMove*, PuzzleMoveScoreComp > open_list(2,PuzzleMoveScoreComp());
-    
+
     /*Creates the starting puzzlemove and pushes it into both lists*/
     PuzzleMove* start = new PuzzleMove(this->b_);
     start->h = this->ph_->compute(*start->b);
     start->f_score = start->g + start->h;
-    closed_list.insert(start);
+    this->closed_list.insert(start);
     open_list.push(start);
 
     /*actual A* algorithm doing work*/
