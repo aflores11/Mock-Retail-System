@@ -29,10 +29,11 @@ class PuzzleSolver
   // Return how many expansions were performed in the search
   int getNumExpansions();
  private:
-  Board b_;
+  Board* b_;
   std::deque<int> solution_;
   int expansions_;
   PuzzleHeuristic *ph_;
+  PuzzleMoveSet closed_list;
 };
 
 #endif

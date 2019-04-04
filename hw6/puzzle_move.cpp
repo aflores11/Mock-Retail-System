@@ -24,10 +24,10 @@ PuzzleMove::PuzzleMove(Board* board /*, PuzzleHeuristic* ph*/)
 
 PuzzleMove:: PuzzleMove(int tile, Board* board, PuzzleMove *parent)
 {
-    this->b = new Board(*board);
+    this->b = board;
     this->prev = parent;
     this->tileMove = tile;
-    this->nextBoards = board->potentialMoves();
+    //this->nextBoards = board->potentialMoves();
     this->g = this->prev-> g + 1;
 
 }
@@ -35,10 +35,12 @@ PuzzleMove:: PuzzleMove(int tile, Board* board, PuzzleMove *parent)
 PuzzleMove::~PuzzleMove()
 {
     delete this->b;
+    /*
     std::map<int, Board*>::iterator it;
     for(it = this-> nextBoards.begin(); it!=this->nextBoards.end(); ++it)
     {
         delete it->second;
     }
     this->nextBoards.clear();
+    */
 }
