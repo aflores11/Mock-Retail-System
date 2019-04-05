@@ -288,7 +288,10 @@ std::ostream& operator<<(std::ostream &os, const Board &b)
         continue;
       }
       
-      os << " " << b.tiles_[cols] << "|"; 
+      if(b.tiles_[cols] < 10){ // takes only one space of the mini tile
+        os << " " << b.tiles_[cols] << "|"; 
+      }
+      else os << b.tiles_[cols] << "|";  // takes both spaces inside the tile
     }
     os <<"\n";
     b.printRowBanner(os);

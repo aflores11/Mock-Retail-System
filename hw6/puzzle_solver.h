@@ -28,7 +28,9 @@ class PuzzleSolver
 
   // Return how many expansions were performed in the search
   int getNumExpansions() const;
+
  private:
+ 
   Board* b_;
   std::deque<int> solution_;
   int expansions_;

@@ -21,18 +21,18 @@ int main(int argc, char *argv[])
     cerr << "Usage: ./puzzle size initMoves seed heur" << endl;
     return 1;
   }
+
+  /*set up the board */
   int size = std::stoi(argv[1]);
   int initMoves = std::stoi(argv[2]);
   int seed = std::stoi(argv[3]);
   int heur = std::stoi(argv[4]);
-
-  
-  
-   Board* game = new Board(size, initMoves, seed);
+  Board* game = new Board(size, initMoves, seed);
 
   cout << *game << endl; 
 
   bool endgame = false;
+
 
   while(!endgame)
   {
@@ -41,6 +41,7 @@ int main(int argc, char *argv[])
 
     cin >> playermove;
 
+    /*checks if input is a valid number*/
     try
     {
       if(cin.fail()) throw notanumber();
@@ -48,22 +49,24 @@ int main(int argc, char *argv[])
     catch(notanumber &e)
     {
       cin.clear();
-      cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+      cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');  // resets cin to be able to use again
       continue;
 
     }
 
+    //player wants to exit game
     if(playermove == 0) endgame =true;
 
+    //player wants a cheat
     else if(playermove == -1)
     {
       PuzzleHeuristic* myheur;
-      givememyheur(myheur, heur);
-      PuzzleSolver* cheat = new PuzzleSolver(*game, myheur);
+      givememyheur(myheur, heur); //helper function to get appropriate heuristic
+      PuzzleSolver* cheat = new PuzzleSolver(*game, myheur); //allocates A*
       cheat->run();
-      deque<int> sol = cheat->getSolution();
+      deque<int> sol = cheat->getSolution(); 
       cout << "Try this sequence:\n";
-      while(!sol.empty())
+      while(!sol.empty()) //displays solution from back to front as they are push from last to start
       {
         cout << sol.back() << " ";
         sol.pop_back();
@@ -72,15 +75,26 @@ int main(int argc, char *argv[])
       int exp = cheat->getNumExpansions();
       cout << "(Expansions = " << exp << ")" << endl << endl;
       cout << *game << endl;
-      delete myheur;
+      /*cleans up my allocations*/
+      delete myheur; 
       delete cheat;
     }
 
+    /*makes sure that the integer inputed is in the range of tile values available*/
     else if(playermove>0 && playermove<game->size())
     {
+      /* trys to make a valid move next to blank space */
+      try{
       game->move(playermove);
+      cout <<endl;
       cout << *game << endl;
       if(game->solved()) endgame = true;
+      }
+      catch(BoardMoveError &m)
+      {
+        cout << m.what();
+        continue;
+      }
     }
 
     else
@@ -90,7 +104,7 @@ int main(int argc, char *argv[])
 
 
   }
-
+  //clean after my memory
   delete game;
 
   return 0;
