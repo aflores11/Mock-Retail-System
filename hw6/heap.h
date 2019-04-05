@@ -68,7 +68,7 @@ void Heap<T,PComparator>::trickleup(int pos)
 template <typename T, typename PComparator>
 void Heap<T,PComparator>::heapify(int pos)
 {
-  if((pos*this->m_ary) + 1  < (int)this->myheap.size()) //makes sure curr position is not a leaf node
+  if((pos*this->m_ary) + 1  < (int)this->myheap.size()) //makes sure curr position is not a leaf node,+1 or 0 based indexing
   {
     int child = pos*(this->m_ary) +1; //one child is gauranteed, also sets it to first child
     for(int i = child+1; i< child + this->m_ary; i++ )
@@ -76,7 +76,8 @@ void Heap<T,PComparator>::heapify(int pos)
       if(i >= (int)this->myheap.size()) break; // makes sure we only look at children that exist
       //next line checks if two chldren are tied, if so child stays the left most child
       if(this->comp(this->myheap[child], this->myheap[i]) == this->comp(this->myheap[i], this->myheap[child])) continue;
-      else if(!this->comp(this->myheap[child], this->myheap[i]))
+      
+      if(!this->comp(this->myheap[child], this->myheap[i]))
       {
         child = i;
       }

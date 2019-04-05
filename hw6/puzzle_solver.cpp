@@ -61,7 +61,7 @@ void PuzzleSolver::run()
         {
             PuzzleMove* newpm = new PuzzleMove(it->first, it->second, temp); //makes new puzzlemove
             /*updates the scores of the new puzzlemoves*/
-            newpm->h = this->ph_->compute(*it->second);
+            newpm->h = this->ph_->compute(*(it->second));
             newpm->f_score = newpm->h + newpm->g;
 
             if(closed_list.find(newpm) == closed_list.end()) //checks if it is already in the set and adds if not

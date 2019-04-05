@@ -41,13 +41,14 @@ struct PuzzleMoveScoreComp
     // by returning true when m1's tileMove is less than m2's.
 
     if(m1->f_score < m2->f_score) return true;
+    else if(m1->f_score > m2->f_score) return false;
     else if( (m1->f_score == m2->f_score) && ((m1->h) < (m2->h) ) ) return true; 
+    else if((m1->f_score == m2->f_score) && (m1->h) > (m2->h)) return false;
     else
     {
       if( (m1->f_score == m2->f_score) && (m1-> h == m2->h) ) return m1->tileMove < m2->tileMove;
       else return false;
     }
-
   }
 };
 

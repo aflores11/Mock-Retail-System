@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
 
   while(!endgame)
   {
-    std::cout<< "Enter tile number to move or -1 for a cheat:";
+    std::cout<< "Enter tile number to move or -1 for a cheat: ";
     int playermove;
 
     cin >> playermove;
