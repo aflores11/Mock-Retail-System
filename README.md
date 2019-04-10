@@ -1,5 +1,5 @@
 # CS 104 Student Repository
 
-- **Name**: Tommy Trojan
-- **USC ID**: 1234567890
-- **Email**: ttrojan@usc.edu
+- **Name**: Angel Flores
+- **USC ID**: 3518767555
+- **Email**: angelflo@usc.edu
