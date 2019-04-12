@@ -48,5 +48,9 @@
 *.out
 *.app
 
-hw3/hw3_check/
+
 hw3/stringparser
+hw7/tester
+hw7/tester.cpp
+hw4/tester.cpp
+.vscode/
