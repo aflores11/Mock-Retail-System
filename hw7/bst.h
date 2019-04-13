@@ -503,80 +503,92 @@ void BinarySearchTree<Key, Value>::insert(const std::pair<const Key, Value> &key
 template <typename Key, typename Value>
 void BinarySearchTree<Key, Value>::remove(const Key &key)
 {
+    if(this->empty()) return; //cannot remove on an empty list
     Node<Key, Value>* curr = internalFind(key);
     if(curr == nullptr) return; // not found
-    else if(curr->getLeft() != nullptr && curr->getRight() == nullptr) //has left child only, promotion of child
+    bool flush = true;
+    
+    while(flush)
     {
-         Node<Key, Value>* tempParent = curr->getParent();
-         if(tempParent == nullptr) // curr is the root 
-         {
-             this->root_ = curr->getLeft();
-             this->root_->setParent(nullptr);
-             delete curr;
-             return;
-         }
-        if(tempParent -> getRight() == curr) 
-        {
-            tempParent->setRight(curr->getLeft());
-            tempParent->getRight()->setParent(tempParent);
-            delete curr;
-            return;
-        }
-        if(tempParent -> getLeft() == curr)
-        { 
-            tempParent -> setLeft(curr->getLeft());
-            tempParent->getLeft()->setParent(tempParent);
-            delete curr;
-            return;
-        }
-
-    }
-    else if(curr->getLeft() == nullptr && curr->getRight() != nullptr) // has right child only, promotion of child
-    {
-        Node<Key, Value>* tempParent = curr->getParent();
-         if(tempParent == nullptr) // curr is the root 
-         {
-             this->root_ = curr->getRight();
-             this->root_->setParent(nullptr);
-             delete curr;
-             return;
-         }
-        if(tempParent -> getRight() == curr) 
-        {
-            tempParent->setRight(curr->getRight());
-            tempParent->getRight()->setParent(tempParent);
-            delete curr;
-            return;
-        }
-        if(tempParent -> getLeft() == curr)
-        { 
-            tempParent -> setLeft(curr->getRight());
-            tempParent->getLeft()->setParent(tempParent);
-            delete curr;
-            return;
-        }
-    }
-    else if(curr->getLeft() != nullptr && curr->getRight() != nullptr) // has two children
-    {  
-        Node<Key, Value>* temp = successor(curr);
-        this->nodeSwap(temp, curr);
-        delete curr;
-
-    }
-    else
-    {
-       if(curr->getLeft() == nullptr && curr->getRight() == nullptr) // has no children
+        if(curr->getLeft() != nullptr && curr->getRight() == nullptr) //has left child only, promotion of child
         {
             Node<Key, Value>* tempParent = curr->getParent();
-            if(tempParent == nullptr) this->clear(); // case for single node 
-            
-            if(tempParent -> getRight() == curr) tempParent->setRight(nullptr);
-            if(tempParent -> getLeft() == curr) tempParent -> setLeft(nullptr);
-            delete curr;
-        } 
-    
+            if(tempParent == nullptr) // curr is the root 
+            {
+                this->root_ = curr->getLeft();
+                this->root_->setParent(nullptr);
+                delete curr;
+                return;
+            }
+            if(tempParent -> getRight() == curr) 
+            {
+                tempParent->setRight(curr->getLeft());
+                tempParent->getRight()->setParent(tempParent);
+                delete curr;
+                return;
+            }
+            if(tempParent -> getLeft() == curr)
+            { 
+                tempParent -> setLeft(curr->getLeft());
+                tempParent->getLeft()->setParent(tempParent);
+                delete curr;
+                return;
+            }
+
+        }
+        else if(curr->getLeft() == nullptr && curr->getRight() != nullptr) // has right child only, promotion of child
+        {
+            Node<Key, Value>* tempParent = curr->getParent();
+            if(tempParent == nullptr) // curr is the root 
+            {
+                this->root_ = curr->getRight();
+                this->root_->setParent(nullptr);
+                delete curr;
+                return;
+            }
+            if(tempParent -> getRight() == curr) 
+            {
+                tempParent->setRight(curr->getRight());
+                tempParent->getRight()->setParent(tempParent);
+                delete curr;
+                return;
+            }
+            if(tempParent -> getLeft() == curr)
+            { 
+                tempParent -> setLeft(curr->getRight());
+                tempParent->getLeft()->setParent(tempParent);
+                delete curr;
+                return;
+            }
+        }
+        else if(curr->getLeft() != nullptr && curr->getRight() != nullptr) // has two children
+        {  
+            Node<Key, Value>* temp = successor(curr);
+            this->nodeSwap(temp, curr);
+            /* 
+            what this does is that it uses the while loop to flush out the node we want to remove to be either one of the
+            following cases: has only one child, or becomes a leaf node; 
+            */
+        }
+        else
+        {
+            if(curr->getLeft() == nullptr && curr->getRight() == nullptr) // has no children
+            {
+                Node<Key, Value>* tempParent = curr->getParent();
+                if(tempParent == nullptr) // case for single node
+                {
+                    this->clear(); 
+                    return;
+                } 
+                
+                if(tempParent -> getRight() == curr) tempParent->setRight(nullptr);
+                if(tempParent -> getLeft() == curr) tempParent -> setLeft(nullptr);
+                delete curr;
+                return;
+            } 
+        
+        }
     }
-    
 }
 
 template <class Key, class Value>
@@ -679,6 +691,7 @@ template <typename Key, typename Value>
 void BinarySearchTree<Key, Value>::clear()
 {
     // TODO
+    if(this->empty()) return;
     PostOrderDelete(this->root_);
     this->root_ = nullptr;
     return;
@@ -725,7 +738,7 @@ Node<Key, Value> *BinarySearchTree<Key, Value>::internalFind(const Key &key) con
         }
         
     }
-    return nullptr;
+    return temp;
 }
 
 /**
