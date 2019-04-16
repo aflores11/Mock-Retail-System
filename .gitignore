@@ -54,3 +54,5 @@ hw7/tester
 hw7/tester.cpp
 hw4/tester.cpp
 .vscode/
+hw7_check/
+tests/

@@ -5,6 +5,7 @@
 #include <exception>
 #include <cstdlib>
 #include <utility>
+#include <cstdlib>
 
 /**
  * A templated class for a Node in a search tree.
@@ -245,6 +246,7 @@ protected:
     // Add helper functions here
     void PostOrderDelete(Node<Key, Value>* curr);
     static Node<Key, Value> *successor(Node<Key, Value> *current);
+    bool subtreebalance(Node<Key,Value>* rootnode) const;
 
 protected:
     Node<Key, Value> *root_;
@@ -384,7 +386,7 @@ Begin implementations for the BinarySearchTree class.
 template <class Key, class Value>
 BinarySearchTree<Key, Value>::BinarySearchTree() 
 {
-    // TODO
+    
     this->root_ = nullptr;
 }
 
@@ -563,7 +565,7 @@ void BinarySearchTree<Key, Value>::remove(const Key &key)
         }
         else if(curr->getLeft() != nullptr && curr->getRight() != nullptr) // has two children
         {  
-            Node<Key, Value>* temp = successor(curr);
+            Node<Key, Value>* temp = predecessor(curr);
             this->nodeSwap(temp, curr);
             /* 
             what this does is that it uses the while loop to flush out the node we want to remove to be either one of the
@@ -747,8 +749,39 @@ Node<Key, Value> *BinarySearchTree<Key, Value>::internalFind(const Key &key) con
 template <typename Key, typename Value>
 bool BinarySearchTree<Key, Value>::isBalanced() const
 {
-    // TODO
+    if(this->empty()) return true;
+    
+    BinarySearchTree<Key,Value>::iterator it;
+    for(it = this->begin(); it != this->end(); ++it)
+    {
+        if(subtreebalance(it.current_) )
+        {
+            return false;
+        }
+
+    }
+    
+
+    return true;
 }
+template <typename Key, typename Value>
+bool BinarySearchTree<Key, Value>::subtreebalance(Node<Key,Value>* rootnode) const
+{
+
+    int leftside =0;
+    int rightside = 0;
+    if(rootnode->getLeft() != nullptr )
+    {
+        leftside = getSubtreeHeight(rootnode->getLeft());
+    }
+    if(rootnode->getRight() != nullptr )
+    {
+        rightside = getSubtreeHeight(rootnode->getRight());
+    }
+
+    return abs(leftside - rightside) > 1; 
+}
+
 
 template <typename Key, typename Value>
 void BinarySearchTree<Key, Value>::nodeSwap(Node<Key, Value> *n1, Node<Key, Value> *n2)
