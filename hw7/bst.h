@@ -749,7 +749,6 @@ Node<Key, Value> *BinarySearchTree<Key, Value>::internalFind(const Key &key) con
 template <typename Key, typename Value>
 bool BinarySearchTree<Key, Value>::isBalanced() const
 {
-    std::cout<<"Using my own isBalanced" << std::endl;
     if(this->empty()) return true;
     
     BinarySearchTree<Key,Value>::iterator it;
