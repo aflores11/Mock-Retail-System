@@ -73,7 +73,15 @@ void flip(int x1, int y1, const Rectangle& r, vector<vector<bool> >& grid)
 
 
 // TODO: Write your backtracking search function here
-
+void findsolutions(InputMapType &in, bool &foundsolution, OutputMapType &out)
+{
+    InputMapType::iterator it; 
+    for(it = in.begin(); it != in.end() ; ++it)
+    {
+    
+    }
+    return;
+}
 
 
 
@@ -117,7 +125,7 @@ int main(int argc, char *argv[])
 
     // TODO:  Call your backtracking search function here
 
-
+    findsolutions(input, solution_exists, output);
 
 
     if (!solution_exists) {
